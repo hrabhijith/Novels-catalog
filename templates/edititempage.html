@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    {% if token == 1 %}
+    <h2>Edit novel detail</h2>
+    <br>
+    <form action="" method='POST'>
+        <label>Name:
+            <input type="text" name="editedName" placeholder="{{novel.name}}">
+        </label>
+        <br>
+        <br>
+        <label>Year:
+            <input type="text" name="editedYear" placeholder="{{novel.year}}">
+        </label>
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+
+        <input type="button" value="Cancel"
+            onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">
+    </form>
+    {% endif %}
+
+    {% if token == 2 %}
+    <h2>Edit novel description</h2>
+    <br>
+    <form action="" method='POST'>
+        <p>Description:</p>
+        <textarea name="editedDescription" placeholder="{{novel.description}}" cols="30" rows="10"></textarea>
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+
+        <input type="button" value="Cancel"
+            onclick="window.location.href='{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}';">
+    </form>
+    {% endif %}
+
+</body>
+
+</html>

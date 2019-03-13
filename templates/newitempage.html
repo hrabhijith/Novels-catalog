@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>New</title>
+</head>
+
+<body>
+
+    <h2>New Novel by {{author.name}}</h2>
+    <br>
+    <form action="" method='POST'>
+        <label>Name:
+            <input type="text" name="newName" placeholder="" required>
+        </label>
+        <br>
+        <br>
+        <label>Year:
+            <input type="text" name="newYear" placeholder="" required>
+        </label>
+        <br>
+        <br>
+        <label>Description:
+            <input type="textarea" name="newDescription" placeholder="">
+        </label>
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+
+        <input type="button" value="Cancel" onclick = "window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">
+    </form>
+</body>
+
+</html>

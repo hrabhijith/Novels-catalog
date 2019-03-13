@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>{{ novel.name }}</h2>
+    <br>
+    <br>
+    <p>{{ novel.description }}</p>
+    <br>
+    <a href="{{url_for('descriptionEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
+    <a href="{{url_for('descriptionDelete', author_id = author.id, novel_id = novel.id)}}">Delete</a>
+
+</body>
+
+</html>
