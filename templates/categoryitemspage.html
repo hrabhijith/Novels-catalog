@@ -10,10 +10,22 @@
 
 <body>
     <h1>Novels by {{author.name}}</h1>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
     <a href="{{url_for('itemNew', author_id = author.id)}}">New Novel</a>
     <ul>
         {% for novel in novels %}
-        <li><a href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">{{ novel.name }}</a></li>
+        <li><a
+                href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">{{ novel.name }}</a>
+        </li>
         <p>{{ novel.year }}</p>
         <a href="{{url_for('itemEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
         <a href="{{url_for('itemDelete', author_id = author.id, novel_id = novel.id)}}">Delete</a>

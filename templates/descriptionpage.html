@@ -11,11 +11,21 @@
 <body>
     <h2>{{ novel.name }}</h2>
     <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
     <br>
     <p>{{ novel.description }}</p>
     <br>
     <a href="{{url_for('descriptionEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
-    <a href="{{url_for('descriptionDelete', author_id = author.id, novel_id = novel.id)}}">Delete</a>
+    
 
 </body>
 

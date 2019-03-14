@@ -9,9 +9,15 @@
 <body>
     {% if token == 1 %}
     <h2>Novel {{novel.name}} will be deleted. Are you sure?</h2>
+    <br>
+    <br>
+    <form action="" method = 'POST'>
+        <input type="submit" value="Delete">
+        <input type="button" value="Cancel" onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';" >
+    </form>
     {% endif %}
-    {% if token == 2 %}
+    <!-- {% if token == 2 %}
     <h2>Description for novel {{novel.name}} will be deleted. Are you sure?</h2>
-    {% endif %}
+    {% endif %} -->
 </body>
 </html>

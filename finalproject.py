@@ -1,11 +1,13 @@
 from flask import Flask
 from flask import render_template
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker 
+from sqlalchemy.orm import sessionmaker, joinedload
 from database_setup import Authors, Base, Novels
 from flask import request
 from flask import redirect
 from flask import url_for
+from flask import flash
+from flask import jsonify
 
 #Creates sqlite db connection
 def dbConnection():
@@ -45,10 +47,12 @@ def itemEdit(author_id, novel_id):
         if request.form['editedName']:
             novel.name = request.form['editedName']
             session.add(novel)
+            flash('A novel name was just edited')
         
         if request.form['editedYear']:
             novel.year = request.form['editedYear']
             session.add(novel)
+            flash('A novel year was just edited')
 
         session.commit()
         session.close()
@@ -64,8 +68,17 @@ def itemEdit(author_id, novel_id):
 def itemDelete(author_id, novel_id):
     token = 1
     session = dbConnection()
+    if request.method == 'POST':
+       novel = session.query(Novels).filter_by(id = novel_id).one()
+       session.delete(novel)
+       session.commit()
+       flash('A novel was just deleted')
+       session.close()
+       return redirect(url_for('categoryDetail', author_id = author_id))
+
+    author = session.query(Authors).filter_by(id = author_id).one()  
     novel = session.query(Novels).filter_by(id = novel_id).one()
-    return render_template('deleteitempage.html', token = token, novel = novel)
+    return render_template('deleteitempage.html', token = token, novel = novel, author = author)
 
 # New category item
 @app.route('/home/<int:author_id>/new', methods=['GET','POST'])
@@ -75,7 +88,7 @@ def itemNew(author_id):
         newNovel = Novels(name = request.form['newName'], year = request.form['newYear'], description = request.form['newDescription'], author_id = author_id)
         session.add(newNovel)
         session.commit()
-        #flash('New Menu item Created')
+        flash('A novel was just created')
         return redirect(url_for('categoryDetail', author_id = author_id))
 
     author = session.query(Authors).filter_by(id = author_id).one()
@@ -100,8 +113,10 @@ def descriptionEdit(author_id, novel_id):
         if request.form['editedDescription']:
             novel.description = request.form['editedDescription']
             session.add(novel)
+            flash('Novel description was just edited')
 
         session.commit()
+        
         session.close()
         #flash('New Menu item Created')
         return redirect(url_for('categoryDescription', author_id = author_id, novel_id = novel_id))
@@ -110,13 +125,20 @@ def descriptionEdit(author_id, novel_id):
     novel = session.query(Novels).filter_by(id = novel_id).one()
     return render_template('edititempage.html', token = token, novel = novel, author = author)
 
-# delete description
-@app.route('/home/<int:author_id>/<int:novel_id>/description/delete', methods=['GET','POST'])
-def descriptionDelete(author_id, novel_id):
-    token = 2
+# # delete description
+# @app.route('/home/<int:author_id>/<int:novel_id>/description/delete', methods=['GET','POST'])
+# def descriptionDelete(author_id, novel_id):
+#     token = 2
+#     session = dbConnection()
+#     novel = session.query(Novels).filter_by(id = novel_id).one()
+#     return render_template('deleteitempage.html', token = token, novel = novel)
+
+# JSON endpoint
+@app.route('/library.json')
+def libraryJSON():
     session = dbConnection()
-    novel = session.query(Novels).filter_by(id = novel_id).one()
-    return render_template('deleteitempage.html', token = token, novel = novel)
+    authors = session.query(Authors).options(joinedload(Authors.novels)).all()
+    return jsonify(Authors = [dict(c.serialize , Novels=[i.serialize1 for i in c.novels])for c in authors])
 
 
 
