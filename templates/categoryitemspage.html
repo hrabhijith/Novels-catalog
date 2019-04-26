@@ -1,3 +1,6 @@
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,10 +12,11 @@
 </head>
 
 <body>
+    {% block content %}
     <h1>Novels by {{author.name}}</h1>
+    <!-- Display flash messages -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-
     <ul>
         {% for message in messages %}
         <li> <strong> {{ message }} </strong> </li>
@@ -22,17 +26,72 @@
     {% endwith %}
     <a href="{{url_for('itemNew', author_id = author.id)}}">New Novel</a>
     <ul>
-        {% for novel in novels %}
-        <li><a
-                href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">{{ novel.name }}</a>
-        </li>
-        <p>{{ novel.year }}</p>
-        <a href="{{url_for('itemEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
-        <a href="{{url_for('itemDelete', author_id = author.id, novel_id = novel.id)}}">Delete</a>
-        <br>
-        <br>
-        {% endfor %}
+        <!-- Novel details -->
+
+        <div class="row">
+
+            {% for novel in novels %}
+            <div class="col-md-2">
+                <li><a
+                        href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">{{ novel.name }}</a>
+                </li>
+                <p>{{ novel.year }}</p>
+                <!-- Display edit and delete buttons only if user is logged in -->
+                {% if novel.user_id == creator_id %}
+                <button type="button" class="btn btn-primary"
+                    onclick="window.location.href='{{url_for('itemEdit', author_id = author.id, novel_id = novel.id)}}';">Edit</button>
+                <button type="button" class="btn btn-primary"
+                    onclick="window.location.href='{{url_for('itemDelete', author_id = author.id, novel_id = novel.id)}}';">Delete</button>
+                {% endif %}
+                {% if novel.user_id != creator_id %}
+                <!-- Button to Open the Modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    Edit
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    Delete
+                </button>
+                {% endif %}
+                <br>
+                <br>
+            </div>
+            {% endfor %}
+
+            <!-- The Modal -->
+            <div class="modal" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">No Access</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            You cannot edit or delete novels posted by other users
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Click me!</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </ul>
+
+    </div>
+    </div>
+
+
+    {% endblock %}
+
+
+
 </body>
 
 </html>

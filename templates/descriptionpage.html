@@ -11,9 +11,9 @@
 <body>
     <h2>{{ novel.name }}</h2>
     <br>
+    <!-- Display flash messages -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-
     <ul>
         {% for message in messages %}
         <li> <strong> {{ message }} </strong> </li>
@@ -24,9 +24,10 @@
     <br>
     <p>{{ novel.description }}</p>
     <br>
+    <!-- Display edit button only if user is logged in -->
+    {% if novel.user_id == creator_id %}
     <a href="{{url_for('descriptionEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
-    
-
+    {% endif %}
 </body>
 
 </html>

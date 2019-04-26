@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <!-- Display Novel details edit form if token is 1 -->
     {% if token == 1 %}
     <h2>Edit novel detail</h2>
     <br>
@@ -29,7 +30,8 @@
             onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">
     </form>
     {% endif %}
-
+    
+    <!-- Display Novel description edit form if token is 2 -->
     {% if token == 2 %}
     <h2>Edit novel description</h2>
     <br>

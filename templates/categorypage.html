@@ -1,25 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
+{% block title %}Authors{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Authors</title>
-</head>
+{% block content %}
+<!-- Display flash messages -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="conatainer">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                {% for message in messages %}
+                <li> <strong> {{ message }} </strong> </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 
-<body>
-    <h1>Authors</h1>
+{% endif %}
+{% endwith %}
 
-    <ul>
-        {% for author in authors %}
-        <li><a href="{{url_for('categoryDetail', author_id = author.id)}}">{{ author.name }}</a></li>
-        <br>
-        <br>
-        {% endfor %}
-    </ul>
+<div class="container">
 
 
-</body>
+    <div class="row">
 
-</html>
+        <div class="col-sm-6">
+            <h1>Authors</h1>
+            <br>
+            <!-- Authors list -->
+            <ul>
+                {% for author in authors %}
+                <li><a href="{{url_for('categoryDetail', author_id = author.id)}}">{{ author.name }}</a></li>
+                <br>
+                <br>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <h2>Latest Novels</h2>
+            <br>
+            <!-- Latest novels list -->
+            <ul>
+                {% for i in latest %}
+                <li>{{i['novel']}} <i>({{i['author']}})</i></li>
+                <br>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block signin %}
+<!-- Show login button when user logs out -->
+{% if login == 0 %}
+<div style="padding-left: 1100px, align-self">
+    <button class="btn btn-outline-success my-2 my-sm-0"
+        onclick="window.location.href='{{url_for('showLogin')}}';">Login</button>
+</div>
+{% endif %}
+<!-- Show logout button when user logs in -->
+{% if login == 1 %}
+<div style="padding-left: 1100px, align-self">
+    <button class="btn btn-outline-success my-2 my-sm-0"
+        onclick="window.location.href='{{url_for('disconnect')}}';">Logout</button>
+</div>
+{% endif %}
+
+{% endblock %}
