@@ -2,17 +2,18 @@
 
 Novel library is a novel catalog website which provides information about novels from various authors.
 
+# Please read the following instructions!
+
 ## Highlights
 
 * Users can login using Google or Facebook account and start adding novels under different authors provided.
-* Users can also view novel's name, year published and description under each author without logging in.
 * Users can only edit or delete novel entries which are added by them after logging in.
 * Users can only view novel's information added by other users.
 * Home page lists all the authors currently present in database and recently added novels by users.
 * Selecting an author takes users to the novels list page of the author.
 * Novel's name and year published will be displayed in the novels' list page.
-* Users will not see 'Edit' or 'Delete' buttons under each button untill they login.
-* After logging in, users will see 'Edit' and 'Delete' button only under those novels which are added by them.
+* Users cannot 'Edit' or 'Delete' untill they login.
+* After logging in, users can 'Edit' and 'Delete' only those novels which are added by them.
 * Users can also add new novel to the list after logging in.
 * Selecting a novel will take the user to the novel's description page.
 * Novel's description can be edited with 'Edit' button only if the user is logged in and has the authority to edit.
@@ -71,6 +72,14 @@ using either
 
 or using 
 `python3 database_setup.py`
+
+* After this step, Initial DB data has to be inserted by running the following commands. This has to done by the admins if in production.
+
+using either
+`python insertauthors.py`
+
+or using 
+`python3 insertauthors.py`
 
 ## Source Code
 

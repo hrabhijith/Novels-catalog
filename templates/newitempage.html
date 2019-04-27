@@ -1,5 +1,6 @@
 <!-- Uses base.html template as base -->
 {% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,15 +8,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>New</title>
+    {% block title %}New{% endblock %}
 </head>
 
 <body>
+    {% block signin %}
+    <div style="padding-right: 1000px">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('categoryHomePage')}}';">Home</button>
+    </div>
+    {% endblock %}
     {% block content %}
     <br>
     <div class="row">
         <div class="col-sm-6" style="padding-left: 50px">
-            <strong>New Novel by</strong><h2> {{author.name}}</h2>
+            <strong>New Novel by</strong>
+            <h2> {{author.name}}</h2>
         </div>
     </div>
 
@@ -37,8 +45,8 @@
                     </div>
                     <div class="form-group">
                         <label for="Input3">Description</label>
-                        <input class="form-control" type="textarea" id="Input3" name="newDescription" placeholder=""
-                            required>
+                        <textarea class="form-control" type="text" id="Input3" name="newDescription" placeholder=""
+                            cols="30" rows="10" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
 

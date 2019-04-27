@@ -8,11 +8,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Novels</title>
+    {% block title %}Novels{% endblock %}
 </head>
 
 <body>
     {% block signin %}
+    <div style="padding-right: 1000px">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('categoryHomePage')}}';">Home</button>
+    </div>
     <!-- Show login button when user logs out -->
     {% if login == 0 %}
     <div style="padding-left: 1100px, align-self">
@@ -34,7 +38,9 @@
     <br>
     <div class="row">
         <div class="col-md-6" style="padding-left: 50px">
-                <strong>Novels by</strong><h1><i>{{author.name}}</i></h1>
+            <strong>Novels by</strong>
+            <h1><i>{{author.name}}</i></h1>
+            <p><Strong>Select a novel to know more!</Strong></p>
         </div>
     </div>
 
@@ -63,9 +69,10 @@
         <div class="row">
             {% if novels %}
             {% for novel in novels %}
-            <div class="col-md-2">
-                <li><a
-                        href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}"><h5 style = "text-transform: capitalize">{{ novel.name }}</h5></a>
+            <div class="col-md-4">
+                <li><a href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">
+                        <h5 style="text-transform: capitalize">{{ novel.name }}</h5>
+                    </a>
                 </li>
                 Published Year : <h6>{{ novel.year }}</h6>
                 <!-- Display edit and delete buttons only if user is logged in -->

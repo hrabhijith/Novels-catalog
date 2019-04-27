@@ -1,3 +1,6 @@
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,29 +8,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    {% block title %}Description{% endblock %}
 </head>
 
 <body>
-    <h2>{{ novel.name }}</h2>
-    <br>
-    <!-- Display flash messages -->
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    <br>
-    <p>{{ novel.description }}</p>
-    <br>
-    <!-- Display edit button only if user is logged in -->
-    {% if novel.user_id == creator_id %}
-    <a href="{{url_for('descriptionEdit', author_id = author.id, novel_id = novel.id)}}">Edit</a>
-    {% endif %}
+    {% block signin %}
+    <div style="padding-right: 1000px">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('categoryHomePage')}}';">Home</button>
+    </div>
+    {% endblock %}
+    {% block content %}
+    <div class="container">
+        <div class="row">
+
+
+            <div class="col-sm-6">
+                <br>
+
+                <h2>Novel name: <i style="text-transform: capitalize">{{ novel.name }}</i></h2>
+                <br>
+                <!-- Display flash messages -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                    <li> <strong> {{ message }} </strong> </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+                <br>
+                <b>Description:</b>
+                <br>
+                <div class="jumbotron" style="word-wrap: break-word">
+                    <p>{{ novel.description }}</p>
+                </div>
+
+                <br>
+                <!-- Display edit button only if user is logged in -->
+                {% if novel.user_id == creator_id %}
+                <button type="button" class="btn btn-primary"
+                    onclick="window.location.href='{{url_for('descriptionEdit', author_id = author.id, novel_id = novel.id)}}';">Edit</button>
+                {% endif %}
+                {% if novel.user_id != creator_id %}
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Edit</button>
+                {% endif %}
+                <button type="button" class="btn btn-success"
+                    onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">Back
+                    to List</button>
+                <!-- The Modal -->
+                <div class="modal" id="myModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">No Access</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <ul>
+                                    <li>Please login to modify novel description!</li>
+                                    <li>Post login in, you can edit description of posts, posted by you.</li>
+                                </ul>
+
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Click me!</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

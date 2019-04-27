@@ -1,3 +1,6 @@
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,48 +8,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    {% block title %}Edit{% endblock %}
 </head>
 
 <body>
+    {% block signin %}
+    <div style="padding-right: 1000px">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('categoryHomePage')}}';">Home</button>
+    </div>
+    {% endblock %}
+    {% block content %}
     <!-- Display Novel details edit form if token is 1 -->
     {% if token == 1 %}
-    <h2>Edit novel detail</h2>
+    <br>
+    <div class="row">
+        <div class="col-sm-6" style="padding-left: 50px">
+            <h2>Edit novel detail</h2>
+        </div>
+    </div>
+
     <br>
     <form action="" method='POST'>
-        <label>Name:
-            <input type="text" name="editedName" placeholder="{{novel.name}}">
-        </label>
-        <br>
-        <br>
-        <label>Year:
-            <input type="text" name="editedYear" placeholder="{{novel.year}}">
-        </label>
-        <br>
-        <br>
-        <input type="submit" value="Submit">
+        <div class="container">
+            <div class="row">
 
-        <input type="button" value="Cancel"
-            onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Input1">Name</label>
+                        <input class="form-control" type="text" id="Input1" name="editedName"
+                            placeholder="{{novel.name}}">
+                    </div>
+                    <div class="form-group">
+                        <label for="Input2">Year</label>
+                        <input class="form-control" type="text" id="Input2" name="editedYear"
+                            placeholder="{{novel.year}}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-danger"
+                        onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">Cancel</button>
+                </div>
+            </div>
+        </div>
     </form>
     {% endif %}
-    
+
     <!-- Display Novel description edit form if token is 2 -->
     {% if token == 2 %}
-    <h2>Edit novel description</h2>
+    <br>
+    <div class="row">
+        <div class="col-sm-6" style="padding-left: 50px">
+            <h2>Edit novel description</h2>
+        </div>
+    </div>
+
     <br>
     <form action="" method='POST'>
-        <p>Description:</p>
-        <textarea name="editedDescription" placeholder="{{novel.description}}" cols="30" rows="10"></textarea>
-        <br>
-        <br>
-        <input type="submit" value="Submit">
+        <div class="container">
+            <div class="row">
 
-        <input type="button" value="Cancel"
-            onclick="window.location.href='{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}';">
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Input1">Description: </label>
+                        <textarea class="form-control" type="text" id="Input1" name="editedDescription"
+                            placeholder="{{novel.description}}" cols="30" rows="10"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                    <button type="button" class="btn btn-danger"
+                        onclick="window.location.href='{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}';">Cancel</button>
+                </div>
+            </div>
+        </div>
     </form>
     {% endif %}
-
+    {% endblock %}
 </body>
 
 </html>

@@ -1,19 +1,43 @@
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    {% block title %}Delete{% endblock %}
 </head>
+
 <body>
-    <h2>Novel {{novel.name}} will be deleted. Are you sure?</h2>
-    <br>
-    <br>
+    {% block signin %}
+    <div style="padding-right: 1000px">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('categoryHomePage')}}';">Home</button>
+    </div>
+    {% endblock %}
+    {% block content %}
+
     <!-- Novel delete form -->
-    <form action="" method = 'POST'>
-        <input type="submit" value="Delete">
-        <input type="button" value="Cancel" onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';" >
+    <form action="" method='POST'>
+        <div class="container">
+            <div class="row">
+
+
+                <div class="col-sm-6">
+                    <br>
+                    <h2><i>{{novel.name}}</i> will be deleted. Are you sure?</h2>
+                    <br>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">Cancel</button>
+                </div>
+            </div>
+        </div>
     </form>
+    {% endblock %}
 </body>
+
 </html>

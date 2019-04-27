@@ -70,7 +70,7 @@ def categoryHomePage():
             j = session.query(Authors).filter_by(id=i.author_id).one()
             latestDict['author'] = j.name
             latestList.append(latestDict)
-    
+
     else:
         latestList = None
 
@@ -112,8 +112,18 @@ def itemEdit(author_id, novel_id):
     # Token 1 for rendering novel details edit template
     token = 1
 
+    # Redirect to login page if user is not logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     # Creating DB connection
     session = dbConnection()
+
+    # Checking authorization of the user
+    novel = session.query(Novels).filter_by(id=novel_id).one()
+    if novel.user_id != login_session['user_id']:
+        session.close()
+        return redirect('/')
 
     # POST method functionality
     if request.method == 'POST':
@@ -148,9 +158,18 @@ def itemEdit(author_id, novel_id):
 @app.route('/home/<int:author_id>/<int:novel_id>/delete',
            methods=['GET', 'POST'])
 def itemDelete(author_id, novel_id):
+    # Redirect to login page if user is not logged in
+    if 'username' not in login_session:
+        return redirect('/login')
 
     # Creating DB connection
     session = dbConnection()
+
+    # Checking authorization of the user
+    novel = session.query(Novels).filter_by(id=novel_id).one()
+    if novel.user_id != login_session['user_id']:
+        session.close()
+        return redirect('/')
 
     # POST method functionality
     if request.method == 'POST':
@@ -175,12 +194,12 @@ def itemDelete(author_id, novel_id):
 # New novel page route
 @app.route('/home/<int:author_id>/new', methods=['GET', 'POST'])
 def itemNew(author_id):
-    # Creating DB connection
-    session = dbConnection()
-
     # Redirect to login page if user is not logged in
     if 'username' not in login_session:
         return redirect('/login')
+
+    # Creating DB connection
+    session = dbConnection()
 
     # POST method functionality
     if request.method == 'POST':
@@ -236,8 +255,18 @@ def descriptionEdit(author_id, novel_id):
     # Token 2 for rendering novel's description edit template
     token = 2
 
+    # Redirect to login page if user is not logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     # Creating DB connection
     session = dbConnection()
+
+    # Checking authorization of the user
+    novel = session.query(Novels).filter_by(id=novel_id).one()
+    if novel.user_id != login_session['user_id']:
+        session.close()
+        return redirect('/')
 
     # POST method functionality
     if request.method == 'POST':
@@ -281,6 +310,10 @@ def libraryJSON():
 # Login page route
 @app.route('/login')
 def showLogin():
+    # Redirect to login page if user is not logged in
+    if 'username' in login_session:
+        return redirect('/')
+
     # Creating state token
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
@@ -317,9 +350,12 @@ def getUserId(email):
     session = dbConnection()
     try:
         user = session.query(Users).filter_by(email=email).first()
-        session.close()
-        return user.id
-    except exc.SQLAlchemyError as e:
+        if user is not None:
+            session.close()
+            return user.id
+        else:
+            return None
+    except AttributeError as e:
         print(e)
         return None
 
@@ -391,7 +427,6 @@ def gconnect():
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
-    # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
@@ -490,6 +525,7 @@ def disconnect():
         h = httplib2.Http()
         result = h.request(url, 'DELETE')[1].decode('utf-8')
         res = json.loads(result)
+        print(res)
 
         # If response contains success, deleting login session data
         if res['success'] is True:
@@ -507,7 +543,7 @@ def disconnect():
         # If response doesn't contains success
         else:
             response = make_response(json.dumps(
-                'Failed to revoke connection.'), 400)
+                'Failed to revoke connection fb.'), 400)
             response.headers['Content-Type'] = 'application/json'
             return response
 
@@ -529,8 +565,11 @@ def fbconnect():
         open('fb_client_secret.json', 'r').read())['web']['app_secret']
 
     # Exchanging short-time token for login-time token
-    url = '''https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=fb_exchange_token&fb_exchange_token=%s''' % (
-            app_id, app_secret, access_token)
+    url = "https://graph.facebook.com/oauth/access_token?client_id=%s" % (
+            app_id)
+    url += "&client_secret=%s&grant_type=fb_exchange_token" % (
+            app_secret)
+    url += "&fb_exchange_token=%s" % (access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
     token = result.split(',')[0].split(':')[1].replace('"', '')
@@ -545,7 +584,8 @@ def fbconnect():
         return response
 
     # Sending request to fetch user data
-    url = '''https://graph.facebook.com/v3.2/me?access_token=%s&fields=name,id,email''' % token
+    url = "https://graph.facebook.com/v3.2/me?access_token=%s" % token
+    url += "&fields=name,id,email"
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
 
@@ -556,6 +596,18 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
+    # The token must be stored in the login_session in order to properly logout
+    login_session['access_token'] = token
+
+    # Get user picture
+    url = "https://graph.facebook.com/v3.2/me/picture?access_token=%s" % token
+    url += "&redirect=0&height=200&width=200"
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1].decode('utf-8')
+    data = json.loads(result)
+
+    login_session['picture'] = data["data"]["url"]
+
     # If user not present create user
     user = getUserId(login_session['email'])
     if user is None:
@@ -563,17 +615,6 @@ def fbconnect():
         login_session['user_id'] = id
     else:
         login_session['user_id'] = user
-
-    # The token must be stored in the login_session in order to properly logout
-    login_session['access_token'] = token
-
-    # Get user picture
-    url = '''https://graph.facebook.com/v3.2/me/picture?access_token=%s&redirect=0&height=200&width=200''' % token
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1].decode('utf-8')
-    data = json.loads(result)
-
-    login_session['picture'] = data["data"]["url"]
 
     output = ''
     output += '<h1>Welcome, '
