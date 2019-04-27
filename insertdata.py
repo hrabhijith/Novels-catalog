@@ -18,7 +18,7 @@ user = Users(name="abhi1111", picture="aapota1111", email = "hrabhijith@gmail.co
 session.add(user)
 session.commit()
 
-restaurant1 = Authors(name = "S author", user = user )
+restaurant1 = Authors(name = "Benjamin Franklin", user = user )
 
 session.add(restaurant1)
 session.commit()

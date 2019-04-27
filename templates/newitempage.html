@@ -1,3 +1,5 @@
+<!-- Uses base.html template as base -->
+{% extends "base.html" %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,30 +11,47 @@
 </head>
 
 <body>
+    {% block content %}
+    <br>
+    <div class="row">
+        <div class="col-sm-6" style="padding-left: 50px">
+            <strong>New Novel by</strong><h2> {{author.name}}</h2>
+        </div>
+    </div>
 
-    <h2>New Novel by {{author.name}}</h2>
     <br>
     <!-- New novel form -->
     <form action="" method='POST'>
-        <label>Name:
-            <input type="text" name="newName" placeholder="" required>
-        </label>
-        <br>
-        <br>
-        <label>Year:
-            <input type="text" name="newYear" placeholder="" required>
-        </label>
-        <br>
-        <br>
-        <label>Description:
-            <input type="textarea" name="newDescription" placeholder="" required>
-        </label>
-        <br>
-        <br>
-        <input type="submit" value="Submit">
+        <div class="container">
+            <div class="row">
 
-        <input type="button" value="Cancel" onclick = "window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Input1">Name</label>
+                        <input class="form-control" type="text" id="Input1" name="newName" placeholder="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input2">Year</label>
+                        <input class="form-control" type="text" id="Input2" name="newYear" placeholder="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input3">Description</label>
+                        <input class="form-control" type="textarea" id="Input3" name="newDescription" placeholder=""
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                    <button type="button" class="btn btn-danger"
+                        onclick="window.location.href='{{url_for('categoryDetail', author_id = author.id)}}';">Cancel</button>
+
+                </div>
+            </div>
+
+
+        </div>
     </form>
+    {% endblock %}
 </body>
 
 </html>

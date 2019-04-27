@@ -26,28 +26,62 @@
 
     <div class="row">
 
-        <div class="col-sm-6">
-            <h1>Authors</h1>
+        <div class="col-sm-6" style="background-color: darkkhaki">
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                    <h1><i>Authors</i></h1>
+                </div>
+            </div>
+
             <br>
             <!-- Authors list -->
-            <ul>
-                {% for author in authors %}
-                <li><a href="{{url_for('categoryDetail', author_id = author.id)}}">{{ author.name }}</a></li>
-                <br>
-                <br>
-                {% endfor %}
-            </ul>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul>
+                        {% for author in authors %}
+
+                        <li><a href="{{url_for('categoryDetail', author_id = author.id)}}">
+                                <h5 style="text-transform: capitalize">{{ author.name }}</h5>
+                            </a></li>
+
+                        <br>
+                        <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
         </div>
         <div class="col-sm-6">
-            <h2>Latest Novels</h2>
-            <br>
-            <!-- Latest novels list -->
-            <ul>
-                {% for i in latest %}
-                <li>{{i['novel']}} <i>({{i['author']}})</i></li>
+            <div class="container" style="color: purple">
                 <br>
-                {% endfor %}
-            </ul>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Newly added!</h2>
+                    </div>
+                </div>
+
+                <br>
+                <!-- Latest novels list -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            {% if not latest %}
+                            <h2>Please add novels!</h2>
+                            {% endif %}
+                            {% for i in latest %}
+                            <li style="text-transform: capitalize"><strong>{{i['novel']}}</strong>
+                                <i>({{i['author']}})</i></li>
+                            <br>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
 
     </div>

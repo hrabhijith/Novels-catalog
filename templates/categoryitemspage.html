@@ -12,8 +12,33 @@
 </head>
 
 <body>
+    {% block signin %}
+    <!-- Show login button when user logs out -->
+    {% if login == 0 %}
+    <div style="padding-left: 1100px, align-self">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('showLogin')}}';">Login</button>
+    </div>
+    {% endif %}
+    <!-- Show logout button when user logs in -->
+    {% if login == 1 %}
+    <div style="padding-left: 1100px, align-self">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+            onclick="window.location.href='{{url_for('disconnect')}}';">Logout</button>
+    </div>
+    {% endif %}
+
+    {% endblock %}
+
     {% block content %}
-    <h1>Novels by {{author.name}}</h1>
+    <br>
+    <div class="row">
+        <div class="col-md-6" style="padding-left: 50px">
+                <strong>Novels by</strong><h1><i>{{author.name}}</i></h1>
+        </div>
+    </div>
+
+    <br>
     <!-- Display flash messages -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -24,18 +49,25 @@
     </ul>
     {% endif %}
     {% endwith %}
-    <a href="{{url_for('itemNew', author_id = author.id)}}">New Novel</a>
+    <div class="row">
+        <div class="col-sm-4" style="padding-left: 50px">
+            <button type="button" class="btn btn-success"
+                onclick="window.location.href='{{url_for('itemNew', author_id = author.id)}}';">Add Novel</button>
+        </div>
+    </div>
+    <br>
+    <br>
     <ul>
         <!-- Novel details -->
 
         <div class="row">
-
+            {% if novels %}
             {% for novel in novels %}
             <div class="col-md-2">
                 <li><a
-                        href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}">{{ novel.name }}</a>
+                        href="{{url_for('categoryDescription', author_id = author.id, novel_id = novel.id)}}"><h5 style = "text-transform: capitalize">{{ novel.name }}</h5></a>
                 </li>
-                <p>{{ novel.year }}</p>
+                Published Year : <h6>{{ novel.year }}</h6>
                 <!-- Display edit and delete buttons only if user is logged in -->
                 {% if novel.user_id == creator_id %}
                 <button type="button" class="btn btn-primary"
@@ -45,10 +77,10 @@
                 {% endif %}
                 {% if novel.user_id != creator_id %}
                 <!-- Button to Open the Modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">
                     Edit
                 </button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">
                     Delete
                 </button>
                 {% endif %}
@@ -56,6 +88,12 @@
                 <br>
             </div>
             {% endfor %}
+            {% endif %}
+            {% if not novels %}
+            <h1>
+                Please add Novels!
+            </h1>
+            {% endif %}
 
             <!-- The Modal -->
             <div class="modal" id="myModal">
@@ -70,7 +108,11 @@
 
                         <!-- Modal body -->
                         <div class="modal-body">
-                            You cannot edit or delete novels posted by other users
+                            <ul>
+                                <li>Please login to modify novels!</li>
+                                <li>Post login in, you can edit or delete novels posted by you.</li>
+                            </ul>
+
                         </div>
 
                         <!-- Modal footer -->

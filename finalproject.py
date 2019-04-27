@@ -63,12 +63,16 @@ def categoryHomePage():
     latestList = []
     novels = session.query(Novels).order_by(
         Novels.lastAdded.desc()).limit(10).all()
-    for i in novels:
-        latestDict = {'author': '', 'novel': ''}
-        latestDict['novel'] = i.name
-        j = session.query(Authors).filter_by(id=i.author_id).one()
-        latestDict['author'] = j.name
-        latestList.append(latestDict)
+    if novels is not None:
+        for i in novels:
+            latestDict = {'author': '', 'novel': ''}
+            latestDict['novel'] = i.name
+            j = session.query(Authors).filter_by(id=i.author_id).one()
+            latestDict['author'] = j.name
+            latestList.append(latestDict)
+    
+    else:
+        latestList = None
 
     session.close()
 
@@ -85,6 +89,12 @@ def categoryDetail(author_id):
     novels = session.query(Novels).filter_by(author_id=author_id).all()
     session.close()
 
+    # Checking whether user has logged in or not
+    if 'username' not in login_session:
+        login = 0
+    else:
+        login = 1
+
     # Fetching id of the user if logged in else assigning 'None'
     try:
         creator_id = login_session['user_id']
@@ -92,7 +102,7 @@ def categoryDetail(author_id):
         creator_id = None
 
     return render_template('categoryitemspage.html', novels=novels,
-                           author=author, creator_id=creator_id)
+                           author=author, creator_id=creator_id, login=login)
 
 
 # Edit novel details page route
@@ -448,6 +458,7 @@ def disconnect():
             del login_session['email']
             del login_session['user_id']
             del login_session['access_token']
+            del login_session['state']
             # Message to display when the user logs out
             flash("Logged out Successfully!")
             # Redirecting to home page
@@ -487,6 +498,7 @@ def disconnect():
             del login_session['email']
             del login_session['user_id']
             del login_session['access_token']
+            del login_session['state']
             # Message to display when user logs out
             flash("Logged out Successfully!")
             # Redirect to home page
@@ -508,7 +520,6 @@ def fbconnect():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
     # Fetching short-time access token from client,
     # app id and app secret from stored json file
     access_token = request.data.decode('utf-8')
@@ -518,9 +529,7 @@ def fbconnect():
         open('fb_client_secret.json', 'r').read())['web']['app_secret']
 
     # Exchanging short-time token for login-time token
-    url = '''https://graph.facebook.com/oauth/access_token?client_id=%s
-            &client_secret=%s&grant_type=fb_exchange_token
-            &fb_exchange_token=%s''' % (
+    url = '''https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=fb_exchange_token&fb_exchange_token=%s''' % (
             app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
@@ -536,8 +545,7 @@ def fbconnect():
         return response
 
     # Sending request to fetch user data
-    url = '''https://graph.facebook.com/v3.2/me?access_token=%s
-            &fields=name,id,email''' % token
+    url = '''https://graph.facebook.com/v3.2/me?access_token=%s&fields=name,id,email''' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
 
@@ -560,8 +568,7 @@ def fbconnect():
     login_session['access_token'] = token
 
     # Get user picture
-    url = '''https://graph.facebook.com/v3.2/me/picture?access_token=%s
-            &redirect=0&height=200&width=200''' % token
+    url = '''https://graph.facebook.com/v3.2/me/picture?access_token=%s&redirect=0&height=200&width=200''' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')
     data = json.loads(result)
