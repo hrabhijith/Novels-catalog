@@ -18,6 +18,7 @@ Novel library is a novel catalog website which provides information about novels
 * Selecting a novel will take the user to the novel's description page.
 * Novel's description can be edited with 'Edit' button only if the user is logged in and has the authority to edit.
 * Users can logout using 'Logout' button after logging in.
+* The application data can be consumed by sending request to '/library.json' API endpoint.
 
 ## Installation
 
@@ -97,4 +98,6 @@ or using
 ## Output
 
 By default, the application will start at 'localhost:5000'. Users should enter this url in any browser to start using the application.
+
+API endpoint can be reached to get full app data by sending request to 'localhost:5000/library.json'
 
