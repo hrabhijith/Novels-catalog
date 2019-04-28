@@ -23,6 +23,7 @@ from flask import make_response
 import requests
 import datetime
 import sys
+import logging
 
 app = Flask(__name__)
 
@@ -33,14 +34,14 @@ CLIENT_ID = json.loads(
 
 # Creates sqlite DB connection and return session object
 def dbConnection():
+    """Creates sqlite DB connection and return session object"""
     try:
         engine = create_engine('sqlite:///authorlibrarywithusersandtime.db')
         Base.metadata.bind = engine
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
-    except exc.SQLAlchemyError as e:
-        print(e)
-        print("Unable to connect to the database")
+    except exc.SQLAlchemyError:
+        logging.error('error in db connection')
         sys.exit(1)
     return session
 
@@ -49,6 +50,7 @@ def dbConnection():
 @app.route('/')
 @app.route('/home/', methods=['GET'])
 def categoryHomePage():
+    """Authors list home page route"""
     # Checking whether user has logged in or not
     if 'username' not in login_session:
         login = 0
@@ -83,6 +85,7 @@ def categoryHomePage():
 # Authors' novels page route
 @app.route('/home/<int:author_id>/', methods=['GET'])
 def categoryDetail(author_id):
+    """Authors' novels page route"""
     # Creating DB connection and fetching novels list for selected author
     session = dbConnection()
     author = session.query(Authors).filter_by(id=author_id).one()
@@ -99,6 +102,7 @@ def categoryDetail(author_id):
     try:
         creator_id = login_session['user_id']
     except KeyError:
+        logging.error('No users for an id')
         creator_id = None
 
     return render_template('categoryitemspage.html', novels=novels,
@@ -109,6 +113,7 @@ def categoryDetail(author_id):
 @app.route('/home/<int:author_id>/<int:novel_id>/edit',
            methods=['GET', 'POST'])
 def itemEdit(author_id, novel_id):
+    """Edit novel details page route"""
     # Token 1 for rendering novel details edit template
     token = 1
 
@@ -158,6 +163,7 @@ def itemEdit(author_id, novel_id):
 @app.route('/home/<int:author_id>/<int:novel_id>/delete',
            methods=['GET', 'POST'])
 def itemDelete(author_id, novel_id):
+    """Delete novel page route"""
     # Redirect to login page if user is not logged in
     if 'username' not in login_session:
         return redirect('/login')
@@ -194,6 +200,7 @@ def itemDelete(author_id, novel_id):
 # New novel page route
 @app.route('/home/<int:author_id>/new', methods=['GET', 'POST'])
 def itemNew(author_id):
+    """New novel page route"""
     # Redirect to login page if user is not logged in
     if 'username' not in login_session:
         return redirect('/login')
@@ -230,6 +237,7 @@ def itemNew(author_id):
 @app.route('/home/<int:author_id>/<int:novel_id>/description/',
            methods=['GET'])
 def categoryDescription(author_id, novel_id):
+    """Novel's description page route"""
     # Creating DB connection
     session = dbConnection()
 
@@ -242,6 +250,7 @@ def categoryDescription(author_id, novel_id):
     try:
         creator_id = login_session['user_id']
     except KeyError:
+        logging.error('No users for an id')
         creator_id = None
 
     return render_template('descriptionpage.html',
@@ -252,6 +261,7 @@ def categoryDescription(author_id, novel_id):
 @app.route('/home/<int:author_id>/<int:novel_id>/description/edit',
            methods=['GET', 'POST'])
 def descriptionEdit(author_id, novel_id):
+    """Edit novel description page route"""
     # Token 2 for rendering novel's description edit template
     token = 2
 
@@ -293,9 +303,10 @@ def descriptionEdit(author_id, novel_id):
                            token=token, novel=novel, author=author)
 
 
-# JSON endpoint API route
+# JSON endpoint API route for full app data
 @app.route('/authors/JSON')
 def libraryJSON():
+    """JSON endpoint API route for full app data"""
     # Creating DB connection
     session = dbConnection()
 
@@ -312,6 +323,7 @@ def libraryJSON():
 # JSON endpoint API route for novels of specific author
 @app.route('/authors/<int:author_id>/novels/JSON')
 def authorsJSON(author_id):
+    """JSON endpoint API route for novels of specific author"""
     # Creating DB connection
     session = dbConnection()
 
@@ -326,6 +338,7 @@ def authorsJSON(author_id):
 # JSON endpoint API route for details of specific novel
 @app.route('/authors/<int:author_id>/novels/<int:novel_id>/JSON')
 def novelsJSON(author_id, novel_id):
+    """JSON endpoint API route for details of specific novel"""
     # Creating DB connection
     session = dbConnection()
 
@@ -341,6 +354,7 @@ def novelsJSON(author_id, novel_id):
 # Login page route
 @app.route('/login')
 def showLogin():
+    """Login page route"""
     # Redirect to login page if user is not logged in
     if 'username' in login_session:
         return redirect('/')
@@ -357,6 +371,7 @@ def showLogin():
 
 # Method to create user in DB using login session
 def createUser(login_session):
+    """Method to create user in DB using login session"""
     session = dbConnection()
     newUser = Users(name=login_session['username'],
                     picture=login_session['picture'],
@@ -370,6 +385,7 @@ def createUser(login_session):
 
 # Method to get user object using user id
 def getUserInfo(user_id):
+    """Method to get user object using user id"""
     session = dbConnection()
     user = session.query(Users).filter_by(id=user_id).one()
     session.close()
@@ -378,6 +394,7 @@ def getUserInfo(user_id):
 
 # Method to get user id using email provided
 def getUserId(email):
+    """Method to get user id using email provided"""
     session = dbConnection()
     try:
         user = session.query(Users).filter_by(email=email).first()
@@ -386,14 +403,15 @@ def getUserId(email):
             return user.id
         else:
             return None
-    except AttributeError as e:
-        print(e)
+    except AttributeError:
+        logging.error('No users data')
         return None
 
 
 # Google signin route
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """Google signin route"""
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -410,6 +428,7 @@ def gconnect():
         credentials = oauth_flow.step2_exchange(code)
 
     except FlowExchangeError:
+        logging.error('error in gconnect credentials exchange')
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -494,7 +513,7 @@ def gconnect():
 # Logout functionality route
 @app.route('/disconnect')
 def disconnect():
-
+    """Logout functionality route"""
     # Google logout functionality
     if login_session['provider'] == 'google':
 
@@ -582,6 +601,7 @@ def disconnect():
 # Facebook signin route
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """Facebook signin route"""
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)

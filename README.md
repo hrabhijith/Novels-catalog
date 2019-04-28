@@ -61,9 +61,13 @@ If Vagrant is successfully installed, you will be able to run `vagrant --version
 
 This will create a new directory for this project and begin downloading a Linux image into this directory. It may take a long time to download, depending on your Internet connection.
 
-When it is complete, you can log into the Linux instance with `vagrant ssh`. You are now ready to continue with the project.
+When it is complete, you can log into the Linux instance with `vagrant ssh`. You are now ready to continue with the project by `cd \vagrant` and then into the project folder and follow the steps below.
 
 If you log out of the Linux instance or close the terminal, the next time you want to use it you only need to run `cd project` and `vagrant ssh`
+
+## Requirements installation
+
+* Please run the following commands to install all requirements `pip install -r requirements.txt`
 
 ## Database
 
