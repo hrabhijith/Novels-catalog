@@ -283,7 +283,7 @@ def descriptionEdit(author_id, novel_id):
         session.close()
 
         return redirect(url_for('categoryDescription',
-                        author_id=author_id, novel_id=novel_id))
+                                author_id=author_id, novel_id=novel_id))
 
     author = session.query(Authors).filter_by(id=author_id).one()
     novel = session.query(Novels).filter_by(id=novel_id).one()
@@ -294,17 +294,48 @@ def descriptionEdit(author_id, novel_id):
 
 
 # JSON endpoint API route
-@app.route('/library.json')
+@app.route('/authors/JSON')
 def libraryJSON():
     # Creating DB connection
     session = dbConnection()
 
     # Fetching author and related novel details together
     authors = session.query(Authors).options(joinedload(Authors.novels)).all()
+    session.close()
 
     # Returning JSONified author and novel data of entire DB
     return jsonify(Authors=[dict(c.serialize,
-                   Novels=[i.serialize1 for i in c.novels])for c in authors])
+                                 Novels=[i.serialize1 for i in c.novels])
+                            for c in authors])
+
+
+# JSON endpoint API route for novels of specific author
+@app.route('/authors/<int:author_id>/novels/JSON')
+def authorsJSON(author_id):
+    # Creating DB connection
+    session = dbConnection()
+
+    # Fetching novels for an authors
+    novels = session.query(Novels).filter_by(author_id=author_id).all()
+    session.close()
+
+    # Returning JSONified novel data
+    return jsonify(Novels=[i.serialize1 for i in novels])
+
+
+# JSON endpoint API route for details of specific novel
+@app.route('/authors/<int:author_id>/novels/<int:novel_id>/JSON')
+def novelsJSON(author_id, novel_id):
+    # Creating DB connection
+    session = dbConnection()
+
+    # Fetching novel data of a spefic novel
+    novel = session.query(Novels).filter_by(
+        author_id=author_id, id=novel_id).first()
+    session.close()
+
+    # Returning JSONified novel data
+    return jsonify(novel.serialize1)
 
 
 # Login page route
@@ -566,9 +597,9 @@ def fbconnect():
 
     # Exchanging short-time token for login-time token
     url = "https://graph.facebook.com/oauth/access_token?client_id=%s" % (
-            app_id)
+        app_id)
     url += "&client_secret=%s&grant_type=fb_exchange_token" % (
-            app_secret)
+        app_secret)
     url += "&fb_exchange_token=%s" % (access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode('utf-8')

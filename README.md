@@ -18,7 +18,9 @@ Novel library is a novel catalog website which provides information about novels
 * Selecting a novel will take the user to the novel's description page.
 * Novel's description can be edited with 'Edit' button only if the user is logged in and has the authority to edit.
 * Users can logout using 'Logout' button after logging in.
-* The application data can be consumed by sending request to '/library.json' API endpoint.
+* All the application data can be consumed by sending request to '/authors/JSON' API endpoint.
+* Specific author's data can be consumed by sending request to '/authors/<author_id>/novels/JSON' API endpoint.
+* Specific novel data by an author can be consumed by sending request to '/authors/<author_id>/novels/<novel_id>/JSON' API endpoint.
 
 ## Installation
 
@@ -68,30 +70,30 @@ If you log out of the Linux instance or close the terminal, the next time you wa
 * This project uses SQLlite and SQLAlchemy ORM as database tool and language for queries.
 * Before running the python source code, database has to be setup by running following commands.
 
-using either
+* using either
 `python database_setup.py`
 
-or using 
+* or using 
 `python3 database_setup.py`
 
 * After this step, Initial DB data has to be inserted by running the following commands. This has to done by the admins if in production.
 
-using either
+* using either
 `python insertauthors.py`
 
-or using 
+* or using 
 `python3 insertauthors.py`
 
 ## Source Code
 
-The source code is written in the "finalproject.py" file and should be run from linux machine.
+* The source code is written in the "finalproject.py" file and should be run from linux machine.
 
-According to the python version installed, the code can be run 
+* According to the python version installed, the code can be run 
 
-using either
+* using either
 `python finalproject.py`
 
-or using 
+* or using 
 `python3 finalproject.py`
 
 
@@ -99,5 +101,7 @@ or using
 
 By default, the application will start at 'localhost:5000'. Users should enter this url in any browser to start using the application.
 
-API endpoint can be reached to get full app data by sending request to 'localhost:5000/library.json'
+* API endpoint can be reached to get full app data by sending request to 'localhost:5000/authors/JSON'
+* API endpoint can be reached to get specific author's data by sending request to 'localhost:5000/authors/<author_id>/novels/JSON'
+* API endpoint can be reached to get specific specific novel data by an author by sending request to 'localhost:5000/authors/<author_id>/novels/<novel_id>/JSON'
 
