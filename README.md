@@ -18,9 +18,9 @@ Novel library is a novel catalog website which provides information about novels
 * Selecting a novel will take the user to the novel's description page.
 * Novel's description can be edited with 'Edit' button only if the user is logged in and has the authority to edit.
 * Users can logout using 'Logout' button after logging in.
-* All the application data can be consumed by sending request to '/authors/JSON' API endpoint.
-* Specific author's data can be consumed by sending request to '/authors/<author_id>/novels/JSON' API endpoint.
-* Specific novel data by an author can be consumed by sending request to '/authors/<author_id>/novels/<novel_id>/JSON' API endpoint.
+* All the application data can be consumed by sending request to **'/authors/JSON'** API endpoint.
+* Specific author's data can be consumed by sending request to **'/authors/<author_id>/novels/JSON'** API endpoint.
+* Specific novel data by an author can be consumed by sending request to **'/authors/<author_id>/novels/<novel_id>/JSON'** API endpoint.
 
 ## Installation
 
@@ -103,9 +103,9 @@ If you log out of the Linux instance or close the terminal, the next time you wa
 
 ## Output
 
-By default, the application will start at 'localhost:5000'. Users should enter this url in any browser to start using the application.
+By default, the application will start at **'localhost:5000'**. Users should enter this url in any browser to start using the application.
 
-* API endpoint can be reached to get full app data by sending request to 'localhost:5000/authors/JSON'
-* API endpoint can be reached to get specific author's data by sending request to 'localhost:5000/authors/<author_id>/novels/JSON'
-* API endpoint can be reached to get specific specific novel data by an author by sending request to 'localhost:5000/authors/<author_id>/novels/<novel_id>/JSON'
+* API endpoint can be reached to get full app data by sending request to **'localhost:5000/authors/JSON'**
+* API endpoint can be reached to get specific author's data by sending request to **'localhost:5000/authors/<author_id>/novels/JSON'**
+* API endpoint can be reached to get specific specific novel data by an author by sending request to **'localhost:5000/authors/<author_id>/novels/<novel_id>/JSON'**
 
