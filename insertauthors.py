@@ -19,8 +19,32 @@ restaurant1 = Authors(name="Stephen King", user=user)
 session.add(restaurant1)
 session.commit()
 
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
+session.commit()
+
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
+session.commit()
+
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
+session.commit()
+
 restaurant1 = Authors(name="J.R.R. Tolkien", user=user)
 session.add(restaurant1)
+session.commit()
+
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
+session.commit()
+
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
+session.commit()
+
+novels = Novels(name="Novel", year="2001", description="aaaaaaabbbbnnnnfnf", author=restaurant1, user=user)
+session.add(novels)
 session.commit()
 
 restaurant1 = Authors(name="Charles Dickens", user=user)
